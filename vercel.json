@@ -1,9 +1,3 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/hexagramas.json", "dest": "/public/hexagramas.json" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  "outputDirectory": "public"
 }
