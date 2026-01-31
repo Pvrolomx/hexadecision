@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 
-// Datos de hexagramas inline para el prompt
 const HEXAGRAMAS = [
   {n:1, nombre:"Lo Creativo", clave:"Fuerza, iniciativa"},
   {n:2, nombre:"Lo Receptivo", clave:"Receptividad, aceptación"},
@@ -109,40 +108,30 @@ function calcularLectura(pregunta) {
     binarioSecundario,
     lineasMoviles,
     intensidadCambio,
-    verificacion: {
-      hashPrimario,
-      hashSecundario,
-      decimalPrimario: parseInt(hashPrimario.slice(0, 8), 16)
-    }
+    verificacion: { hashPrimario, hashSecundario, decimalPrimario: parseInt(hashPrimario.slice(0, 8), 16) }
   };
 }
 
 async function obtenerInterpretacion(pregunta, lectura) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return "Interpretación no disponible. Consulta los significados tradicionales de los hexagramas.";
+    return "Interpretación no disponible.";
   }
 
   const h1 = HEXAGRAMAS[lectura.hexagramaPrimario - 1];
   const h2 = HEXAGRAMAS[lectura.hexagramaSecundario - 1];
 
-  const prompt = `Eres un sabio intérprete del I-Ching que combina tradición milenaria con claridad moderna.
+  const prompt = `Pregunta del usuario: "${pregunta}"
 
-CONTEXTO:
-- Pregunta: "${pregunta}"
-- Hexagrama primario: #${lectura.hexagramaPrimario} - ${h1.nombre} (${h1.clave})
-- Hexagrama de transformación: #${lectura.hexagramaSecundario} - ${h2.nombre} (${h2.clave})
-- Líneas móviles: ${lectura.lineasMoviles.length > 0 ? lectura.lineasMoviles.join(', ') : 'Ninguna'}
-- Intensidad de cambio: ${lectura.intensidadCambio}%
+Hexagrama: #${lectura.hexagramaPrimario} ${h1.nombre} → #${lectura.hexagramaSecundario} ${h2.nombre}
+Intensidad de cambio: ${lectura.intensidadCambio}%
 
-INSTRUCCIONES:
-1. Interpreta el hexagrama primario en relación directa con la pregunta
-2. Si hay líneas móviles, explica qué significan en este contexto
-3. Describe la transformación hacia el segundo hexagrama
-4. Concluye con una recomendación práctica y concreta
-5. Tono sabio pero accesible, no vago ni místico
-6. Máximo 150 palabras
-7. Responde en español`;
+RESPONDE EN EXACTAMENTE 3 ORACIONES:
+1. Respuesta directa a su pregunta (sí/no/depende + por qué)
+2. Qué debe hacer concretamente
+3. Qué evitar
+
+No uses lenguaje místico. Sé directo como un consejero pragmático.`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -154,16 +143,15 @@ INSTRUCCIONES:
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
+        max_tokens: 200,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     const data = await response.json();
-    return data.content?.[0]?.text || "El oráculo guarda silencio. Medita sobre tu pregunta.";
+    return data.content?.[0]?.text || "Medita sobre tu pregunta.";
   } catch (error) {
-    console.error('Error Claude:', error);
-    return `${h1.nombre}: ${h1.clave}. Transformándose hacia ${h2.nombre}: ${h2.clave}. Reflexiona sobre este cambio.`;
+    return `${h1.nombre} transformándose en ${h2.nombre}.`;
   }
 }
 
@@ -174,20 +162,15 @@ export default async function handler(req, res) {
 
   try {
     const { pregunta } = req.body;
-
     if (isGibberish(pregunta)) {
-      return res.status(400).json({ error: 'Por favor, escribe una pregunta válida y clara.' });
+      return res.status(400).json({ error: 'Escribe una pregunta válida.' });
     }
 
     const lectura = calcularLectura(pregunta);
     const interpretacion = await obtenerInterpretacion(pregunta, lectura);
 
-    return res.status(200).json({
-      ...lectura,
-      interpretacion
-    });
+    return res.status(200).json({ ...lectura, interpretacion });
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'Error interno. Intenta de nuevo.' });
+    return res.status(500).json({ error: 'Error interno.' });
   }
 }
