@@ -1,14 +1,9 @@
 {
-  "rewrites": [
-    { "source": "/hexagramas.json", "destination": "/public/hexagramas.json" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/hexagramas.json", "dest": "/public/hexagramas.json" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
