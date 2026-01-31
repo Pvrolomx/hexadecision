@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hexadecision - El oráculo que puedes verificar</title>
+  <title>Hexadecision - I-Ching con IA</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -73,12 +73,7 @@
     .lineas-moviles { text-align: center; color: #a1a1aa; margin-bottom: 1.5rem; }
     .interpretacion { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; line-height: 1.7; }
     .interpretacion h3 { color: #fbbf24; margin-bottom: 1rem; }
-    .toggle-math { background: transparent; border: 2px solid rgba(245,158,11,0.5); color: #f59e0b; padding: 0.75rem 1.5rem; margin: 0 auto; display: block; width: auto; }
-    .math-panel { display: none; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.5rem; margin-top: 1rem; font-family: monospace; font-size: 0.9rem; }
-    .math-panel.visible { display: block; }
-    .math-panel p { margin-bottom: 0.5rem; color: #a1a1aa; }
-    .math-panel code { color: #22c55e; }
-    .nueva-consulta { margin-top: 2rem; }
+    .nueva-consulta { margin-top: 1rem; }
     footer { text-align: center; padding: 2rem; color: #52525b; font-size: 0.9rem; }
     footer a { color: #f59e0b; text-decoration: none; }
     .loading { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
@@ -90,7 +85,7 @@
   <div class="container">
     <header>
       <h1>HEXADECISION</h1>
-      <p class="tagline">El oráculo que puedes verificar</p>
+      <p class="tagline">I-Ching con interpretación de IA</p>
     </header>
     <div class="input-section">
       <label for="pregunta">¿Cuál es tu pregunta?</label>
@@ -121,16 +116,6 @@
       <div class="interpretacion">
         <h3>Interpretación</h3>
         <p id="interpretacion-texto"></p>
-      </div>
-      <button class="toggle-math" id="btn-math">🔍 Ver matemáticas</button>
-      <div id="math-panel" class="math-panel">
-        <p><strong>Verificación Matemática</strong></p>
-        <p>Pregunta: <code id="math-pregunta"></code></p>
-        <p>Hash SHA-256: <code id="math-hash1"></code></p>
-        <p>mod 64 = <code id="math-mod1"></code> → Hexagrama #<code id="math-hex1"></code></p>
-        <p>---</p>
-        <p>Hash seed 1: <code id="math-hash2"></code></p>
-        <p>mod 64 = <code id="math-mod2"></code> → Hexagrama #<code id="math-hex2"></code></p>
       </div>
       <button class="nueva-consulta" id="btn-nueva">Nueva consulta</button>
     </div>
@@ -164,13 +149,6 @@
         document.getElementById("intensidad-fill").style.width = data.intensidadCambio + "%";
         document.getElementById("lineas").textContent = data.lineasMoviles.length > 0 ? data.lineasMoviles.join(", ") : "Ninguna";
         document.getElementById("interpretacion-texto").textContent = data.interpretacion;
-        document.getElementById("math-pregunta").textContent = pregunta;
-        document.getElementById("math-hash1").textContent = data.verificacion.hashPrimario;
-        document.getElementById("math-mod1").textContent = data.hexagramaPrimario;
-        document.getElementById("math-hex1").textContent = data.hexagramaPrimario;
-        document.getElementById("math-hash2").textContent = data.verificacion.hashSecundario;
-        document.getElementById("math-mod2").textContent = data.hexagramaSecundario;
-        document.getElementById("math-hex2").textContent = data.hexagramaSecundario;
         document.getElementById("resultado").classList.add("visible");
         document.getElementById("resultado").scrollIntoView({behavior:"smooth"});
       } catch(error) {
@@ -181,11 +159,9 @@
         btn.textContent = "CONSULTAR EL ORÁCULO";
       }
     });
-    document.getElementById("btn-math").addEventListener("click", function(){document.getElementById("math-panel").classList.toggle("visible")});
     document.getElementById("btn-nueva").addEventListener("click", function(){
       document.getElementById("resultado").classList.remove("visible");
       document.getElementById("pregunta").value = "";
-      document.getElementById("math-panel").classList.remove("visible");
       window.scrollTo({top:0,behavior:"smooth"});
     });
   </script>
