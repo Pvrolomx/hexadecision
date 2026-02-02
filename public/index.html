@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hexadecision - I-Ching con IA</title>
+  <meta name="theme-color" content="#d4af37">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Hexadecision">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -125,12 +131,12 @@
   <div class="container">
     <header>
       <h1>HEXADECISION</h1>
-      <p class="tagline">I-Ching con interpretación de IA</p>
+      <p class="tagline">I-Ching con interpretacion de IA</p>
     </header>
     <div class="input-section">
-      <label for="pregunta">¿Cuál es tu pregunta?</label>
+      <label for="pregunta">Cual es tu pregunta?</label>
       <textarea id="pregunta" rows="3" placeholder="Escribe tu pregunta con claridad y sinceridad..."></textarea>
-      <button id="btn-consultar">CONSULTAR EL ORÁCULO</button>
+      <button id="btn-consultar">CONSULTAR EL ORACULO</button>
     </div>
     <div id="resultado" class="result-section">
       <div class="hexagrams-display">
@@ -140,7 +146,7 @@
           <div class="hexagram-name" id="nombre1"></div>
           <div class="hexagram-number" id="numero1"></div>
         </div>
-        <div class="arrow">→</div>
+        <div class="arrow">-></div>
         <div class="hexagram-card">
           <div class="hexagram-visual" id="visual2"></div>
           <div class="hexagram-chinese" id="chino2"></div>
@@ -152,9 +158,9 @@
         <div class="intensity-label">Intensidad del cambio: <span id="intensidad-valor">0%</span></div>
         <div class="intensity-track"><div class="intensity-fill" id="intensidad-fill" style="width: 0%"></div></div>
       </div>
-      <div class="lineas-moviles">Líneas que cambian: <span id="lineas"></span></div>
+      <div class="lineas-moviles">Lineas que cambian: <span id="lineas"></span></div>
       <div class="interpretacion">
-        <h3>Interpretación</h3>
+        <h3>Interpretacion</h3>
         <p id="interpretacion-texto"></p>
       </div>
       <button class="nueva-consulta" id="btn-nueva">Nueva consulta</button>
@@ -162,12 +168,17 @@
   </div>
   <footer>Hecho por <a href="https://duendes.app" target="_blank">duendes.app</a> 2026</footer>
   <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(e) { console.log('SW registration failed:', e); });
+    }
+    
     var hexagramasData = [];
     fetch("/hexagramas.json").then(function(r){return r.json()}).then(function(data){hexagramasData=data.hexagramas}).catch(function(e){console.error(e)});
     function binarioAVisual(b){return b.split("").map(function(x){return x==="1"?"━━━━━":"━━ ━━"}).join("\n")}
     document.getElementById("btn-consultar").addEventListener("click", async function(){
       var pregunta = document.getElementById("pregunta").value.trim();
-      if(!pregunta || pregunta.length < 3){alert("Por favor, escribe una pregunta válida.");return}
+      if(!pregunta || pregunta.length < 3){alert("Por favor, escribe una pregunta valida.");return}
       var btn = this;
       btn.disabled = true;
       btn.innerHTML = '<span class="loading"><span class="spinner"></span> Consultando...</span>';
@@ -196,7 +207,7 @@
         alert("Error al consultar. Intenta de nuevo.");
       } finally {
         btn.disabled = false;
-        btn.textContent = "CONSULTAR EL ORÁCULO";
+        btn.textContent = "CONSULTAR EL ORACULO";
       }
     });
     document.getElementById("btn-nueva").addEventListener("click", function(){
