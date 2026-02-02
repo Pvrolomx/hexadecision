@@ -1,0 +1,14 @@
+{
+  "name": "Hexadecision - I-Ching con IA",
+  "short_name": "Hexadecision",
+  "description": "Consulta el I-Ching con inteligencia artificial",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#d4af37",
+  "orientation": "portrait-primary",
+  "icons": [
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}
